@@ -1,6 +1,12 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
+import 'package:product_management/screens/product_list_screen.dart';
 class AddNewProductScreen extends StatefulWidget {
-  const AddNewProductScreen({super.key});
+  final Product? product;
+  const AddNewProductScreen({super.key, this.product});
 
   @override
   State<AddNewProductScreen> createState() => _AddNewProductScreenState();
@@ -13,7 +19,21 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
   final TextEditingController _priceTeController= TextEditingController();
   final TextEditingController _totalPriceTeController= TextEditingController();
   final TextEditingController _descriptionTeController= TextEditingController();
+  final TextEditingController _imgTeController= TextEditingController();
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    if(widget.product!=null){
+      _titleTeController.text= widget.product!.productName;
+      _productCodeTeController.text= widget.product!.productCode;
+      _imgTeController.text=widget.product!.image;
+      _quantityTeController.text=widget.product!.quantity;
+      _priceTeController.text= widget.product!.unitPrice;
+      _totalPriceTeController.text= widget.product!.totalPrice;
+    }
+    super.initState();
+  }
   @override
   void dispose() {
     // TODO: implement dispose
@@ -25,6 +45,40 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
     _descriptionTeController.dispose();
     super.dispose();
   }
+  Future<void> updateProduct() async{
+    final Map<String, String> inputMap={
+      "Img":_imgTeController.text.trim(),
+      "ProductCode":_productCodeTeController.text.trim(),
+      "ProductName":_titleTeController.text.trim(),
+      "Qty":_quantityTeController.text.trim(),
+      "TotalPrice":_totalPriceTeController.text.trim(),
+      "UnitPrice":_priceTeController.text.trim()
+    };
+    final Response response = await http.post(Uri.parse('https://crud.teamrabbil.com/api/v1/UpdateProduct/${widget.product!.id}'),
+      headers: {
+        'Content-Type':'application/json'
+      },
+      body: jsonEncode(inputMap)
+    );
+    print(response.statusCode);
+  }
+  Future<void> addNewProduct() async{
+    final Map<String, String> inputMap={
+      "Img":_imgTeController.text.trim(),
+      "ProductCode":_productCodeTeController.text.trim(),
+      "ProductName":_titleTeController.text.trim(),
+      "Qty":_quantityTeController.text.trim(),
+      "TotalPrice":_totalPriceTeController.text.trim(),
+      "UnitPrice":_priceTeController.text.trim()
+    };
+    final Response response = await http.post(Uri.parse('https://crud.teamrabbil.com/api/v1/CreateProduct'),
+      headers: {
+        'Content-Type':'application/json'
+      },
+      body: jsonEncode(inputMap)
+    );
+    print(response.statusCode);
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,6 +86,13 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            TextFormField(
+              controller: _imgTeController,
+              decoration: const InputDecoration(
+                label: Text('Image'),
+                hintText: 'Enter Product Img Url',
+              ),
+            ),
             TextFormField(
               controller: _titleTeController,
               decoration: const InputDecoration(
@@ -77,7 +138,9 @@ class _AddNewProductScreenState extends State<AddNewProductScreen> {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-                child: ElevatedButton(onPressed: (){}, child: const Text('Add Product')))
+                child: ElevatedButton(onPressed: (){
+                  widget.product==null?addNewProduct():updateProduct();
+                }, child: widget.product!=null?Text('Update'): Text('Add Product')))
           ],
         ),
       ),

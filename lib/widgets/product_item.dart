@@ -40,11 +40,13 @@ class ProductItem extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               ListTile(
-                title: const Text('Edit'),
+                title: const Text('Update'),
                 leading: const Icon(Icons.edit),
                 onTap: (){
                   Navigator.pop(context);
-                  Navigator.push(context, MaterialPageRoute(builder: (context)=> const AddNewProductScreen()));
+                  Navigator.push(context, MaterialPageRoute(builder: (context)=>  AddNewProductScreen(
+                    product: product,
+                  )));
                 },
               ),
               const Divider(height: 0),
