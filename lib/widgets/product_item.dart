@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:product_management/screens/add_new_product_screen.dart';
+import 'package:product_management/screens/product_list_screen.dart';
 class ProductItem extends StatelessWidget {
+  final Product product;
   const ProductItem({
     super.key,
+    required this.product
   });
 
   @override
@@ -13,17 +16,17 @@ class ProductItem extends StatelessWidget {
           return  productAlertDIalogue(context);
         });
       },
-      leading: Image.network('https://cdn.pixabay.com/photo/2024/07/13/22/31/road-8893160_1280.jpg', width: 80,),
-      title: const Text('Product Name'),
-      subtitle: const Column(
+      leading: product.image!=null? Image.network(product.image, width: 80,): Image.network('https://cdn.pixabay.com/photo/2024/08/08/17/13/salt-8955103_1280.jpg',width: 80,),
+      title:  Text(product.productName),
+      subtitle:  Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(children: [
-            Text('Product code'),
-            SizedBox(width: 24,),
-            Text('Total Price'),
+            Text(product.productCode),
+            SizedBox(width: 24),
+            Text(product.totalPrice),
           ]),
-          Text('Product Description'),
+          Text(product.unitPrice),
         ],
       ),
       trailing: const Text('\$ 120'),
