@@ -62,6 +62,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
 
     });
   }
+  void deleteProduct(String id) async {
+    setState(() {
+      inProgress=true;
+    });
+    Response response = await http
+        .get(Uri.parse('https://crud.teamrabbil.com/api/v1/DeleteProduct/${id}'));
+    print("*******************************************");
+    print(response.statusCode);
+    print(response.body);
+    print("********************************************");
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,6 +100,9 @@ class _ProductListScreenState extends State<ProductListScreen> {
             itemBuilder: (context, index) {
               return ProductItem(
                 product: productList[index],
+                onPressDelete: (String id){
+                  deleteProduct(id);
+                },
               );
             },
             separatorBuilder: (_, __) => const SizedBox(

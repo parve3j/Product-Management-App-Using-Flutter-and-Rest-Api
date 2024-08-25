@@ -3,9 +3,11 @@ import 'package:product_management/screens/add_new_product_screen.dart';
 import 'package:product_management/screens/product_list_screen.dart';
 class ProductItem extends StatelessWidget {
   final Product product;
+  final Function(String) onPressDelete;
   const ProductItem({
     super.key,
-    required this.product
+    required this.product,
+    required this.onPressDelete
   });
 
   @override
@@ -55,6 +57,7 @@ class ProductItem extends StatelessWidget {
                 leading: const Icon(Icons.delete),
                 onTap: (){
                   Navigator.pop(context);
+                  onPressDelete(product.id);
                 },
               ),
             ],
